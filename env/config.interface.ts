@@ -3,9 +3,14 @@ export interface DatabaseConfig {
   ssl?: boolean;
 }
 
-export interface JwtConfig {
+export interface JwtTokenConfig {
   secret: string;
   expiresIn: string;
+}
+
+export interface JwtConfig {
+  accessToken: JwtTokenConfig;
+  refreshToken: JwtTokenConfig;
 }
 
 export interface ApiConfig {

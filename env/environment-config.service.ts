@@ -15,8 +15,14 @@ export class EnvironmentConfigService {
         ssl: this.configService.get<string>('NODE_ENV') === 'production',
       },
       jwt: {
-        secret: this.configService.get<string>('JWT_SECRET') || '',
-        expiresIn: this.configService.get<string>('JWT_EXPIRES_IN', '7d'),
+        accessToken: {
+          secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET') || '',
+          expiresIn: this.configService.get<string>('JWT_ACCESS_TOKEN_EXPIRES_IN', '15m'),
+        },
+        refreshToken: {
+          secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET') || '',
+          expiresIn: this.configService.get<string>('JWT_REFRESH_TOKEN_EXPIRES_IN', '7d'),
+        },
       },
       api: {
         prefix: this.configService.get<string>('API_PREFIX', 'api/v1'),
