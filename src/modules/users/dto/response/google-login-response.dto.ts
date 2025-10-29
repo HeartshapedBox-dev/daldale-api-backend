@@ -22,7 +22,6 @@ export class GoogleLoginResponseDto {
     example: {
       accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
       refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-      expiresIn: 3600
     }
   })
   token: {

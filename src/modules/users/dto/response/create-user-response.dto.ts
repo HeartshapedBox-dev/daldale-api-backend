@@ -13,12 +13,6 @@ export class TokenResponseDto {
     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
   })
   refreshToken: string;
-
-  @ApiProperty({
-    description: '토큰 만료 시간 (초)',
-    example: 3600,
-  })
-  expiresIn: number;
 }
 
 export class UserProfileResponseDto {
@@ -97,7 +91,7 @@ export class CreateUserResponseDto {
   @ApiProperty({
     description: '이름',
     example: '홍길동',
-    required: false,
+    required: true,
   })
   name?: string;
 
@@ -105,6 +99,7 @@ export class CreateUserResponseDto {
     description: '사용자 역할',
     enum: UserRole,
     example: UserRole.USER,
+    default: UserRole.USER,
   })
   role: UserRole;
 
@@ -112,16 +107,15 @@ export class CreateUserResponseDto {
     description: '성별',
     enum: Gender,
     example: Gender.MALE,
-    required: false,
   })
-  gender?: Gender;
+  gender: Gender;
 
   @ApiProperty({
     description: '생년월일',
     example: '1990-01-01T00:00:00.000Z',
-    required: false,
+    required: true,
   })
-  birthDate?: Date;
+  birthDate: Date;
 
   @ApiProperty({
     description: '생성일',
@@ -138,15 +132,22 @@ export class CreateUserResponseDto {
   @ApiProperty({
     description: '사용자 프로필',
     type: UserProfileResponseDto,
-    required: false,
+    required: true,
   })
-  profile?: UserProfileResponseDto | null;
+  profile: UserProfileResponseDto;
 
   @ApiProperty({
     description: '주간 자위 횟수 목록',
     type: [MasturbationWeekResponseDto],
+    required: true,
   })
-  masturbationWeeks?: MasturbationWeekResponseDto[];
+  masturbationWeeks: MasturbationWeekResponseDto[];
+
+  @ApiProperty({
+    description: '토큰 정보',
+    type: TokenResponseDto,
+  })
+  tokens: TokenResponseDto;
 }
 
 export type CreateUserResponse = CreateUserResponseDto;
