@@ -6,9 +6,10 @@ import { DatabaseModule } from './modules/database/database.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
-  imports: [EnvironmentModule, DatabaseModule, UsersModule],
+  imports: [EnvironmentModule, DatabaseModule, AuthModule, UsersModule],
   controllers: [AppController],
   providers: [
     {

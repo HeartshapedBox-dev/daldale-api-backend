@@ -1,6 +1,86 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Gender, UserRole } from '../../enum/user.enum';
 
+export class TokenResponseDto {
+  @ApiProperty({
+    description: '액세스 토큰',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  })
+  accessToken: string;
+
+  @ApiProperty({
+    description: '리프레시 토큰',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  })
+  refreshToken: string;
+
+  @ApiProperty({
+    description: '토큰 만료 시간 (초)',
+    example: 3600,
+  })
+  expiresIn: number;
+}
+
+export class UserProfileResponseDto {
+  @ApiProperty({
+    description: '프로필 ID',
+    example: 'clx1234567890',
+  })
+  id: string;
+
+  @ApiProperty({
+    description: '키 (cm)',
+    example: 175.5,
+    required: false,
+  })
+  height?: number;
+
+  @ApiProperty({
+    description: '몸무게 (kg)',
+    example: 70.5,
+    required: false,
+  })
+  weight?: number;
+
+  @ApiProperty({
+    description: '생성일',
+    example: '2024-01-01T00:00:00.000Z',
+  })
+  createdAt: Date;
+
+  @ApiProperty({
+    description: '수정일',
+    example: '2024-01-01T00:00:00.000Z',
+  })
+  updatedAt: Date;
+}
+
+export class MasturbationWeekResponseDto {
+  @ApiProperty({
+    description: 'ID',
+    example: 'clx1234567890',
+  })
+  id: string;
+
+  @ApiProperty({
+    description: '주간 자위 횟수',
+    example: 3,
+  })
+  count: number;
+
+  @ApiProperty({
+    description: '생성일',
+    example: '2024-01-01T00:00:00.000Z',
+  })
+  createdAt: Date;
+
+  @ApiProperty({
+    description: '수정일',
+    example: '2024-01-01T00:00:00.000Z',
+  })
+  updatedAt: Date;
+}
+
 export class CreateUserResponseDto {
   @ApiProperty({
     description: '사용자 ID',
@@ -54,5 +134,20 @@ export class CreateUserResponseDto {
     example: '2024-01-01T00:00:00.000Z',
   })
   updatedAt: Date;
+
+  @ApiProperty({
+    description: '사용자 프로필',
+    type: UserProfileResponseDto,
+    required: false,
+  })
+  profile?: UserProfileResponseDto | null;
+
+  @ApiProperty({
+    description: '주간 자위 횟수 목록',
+    type: [MasturbationWeekResponseDto],
+  })
+  masturbationWeeks?: MasturbationWeekResponseDto[];
 }
+
+export type CreateUserResponse = CreateUserResponseDto;
 

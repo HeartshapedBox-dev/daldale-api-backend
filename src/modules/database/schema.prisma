@@ -21,12 +21,12 @@ enum UserRole {
 }
 
 model User {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   email     String   @unique
-  name      String?
+  name      String
   role      UserRole @default(USER)
-  gender    Gender?
-  birthDate DateTime?
+  gender    Gender
+  birthDate DateTime
   
   
   createdAt DateTime @default(now())
@@ -40,7 +40,7 @@ model User {
 }
 
 model UserProfile {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
@@ -54,16 +54,14 @@ model UserProfile {
 }
 
 model MasturbationWeek {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid())
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
-  weekStartDate DateTime // 주 시작일 (월요일)
   count        Int      @default(0) // 해당 주 자위 횟수
   
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  @@unique([userId, weekStartDate])
   @@map("masturbation_weeks")
 }

@@ -13,58 +13,52 @@ export class CreateUserDto {
   @ApiProperty({
     description: '이름',
     example: '홍길동',
-    required: false,
+    required: true,
   })
-  @IsOptional()
-  name?: string;
+  name: string;
 
   @ApiProperty({
     description: '성별',
     enum: Gender,
     example: Gender.MALE,
-    required: false,
+    required: true,
   })
-  @IsOptional()
   @IsEnum(Gender)
-  gender?: Gender;
+  gender: Gender;
 
   @ApiProperty({
     description: '생년월일',
     example: '1990-01-01',
-    required: false,
+    required: true,
   })
-  @IsOptional()
   @IsDateString()
-  birthDate?: string;
+  birthDate: string;
 
   @ApiProperty({
     description: '키 (cm)',
     example: 175.5,
-    required: false,
+    required: true,
   })
-  @IsOptional()
   @IsNumber()
   @Min(0)
-  height?: number;
+  height: number;
 
   @ApiProperty({
     description: '몸무게 (kg)',
     example: 70.5,
-    required: false,
+    required: true,
   })
-  @IsOptional()
   @IsNumber()
   @Min(0)
-  weight?: number;
+  weight: number;
 
   @ApiProperty({
-    description: '이번 주 자위 횟수',
+    description: '주간 자위 횟수',
     example: 3,
-    required: false,
+    required: true,
   })
-  @IsOptional()
   @IsNumber()
   @Min(0)
-  weeklyMasturbationCount?: number;
+  weeklyMasturbationCount: number;
 }
 

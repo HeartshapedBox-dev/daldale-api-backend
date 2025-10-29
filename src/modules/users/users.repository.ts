@@ -1,6 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
+import { Gender, Prisma, User, UserProfile, MasturbationWeek } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
+
+type UserProfileWithoutUserId = Omit<UserProfile, 'userId'>;
+type MasturbationWeekWithoutUserId = Omit<MasturbationWeek, 'userId'>;
+
+export type UserWithRelations = User & {
+  profile: UserProfileWithoutUserId | null;
+  masturbationWeeks: MasturbationWeekWithoutUserId[];
+};
 @Injectable()
 export class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -11,27 +19,16 @@ export class UsersRepository {
     });
   }
 
-  async createUserDirectly(data: {
+  async createUser(data: {
     email: string;
-    name?: string;
-    gender?: 'MALE' | 'FEMALE';
-    birthDate?: Date;
-    height?: number;
-    weight?: number;
-    weeklyMasturbationCount?: number;
-  }): Promise<User> {
-    // 이번 주 월요일 계산
-    const getWeekStartDate = () => {
-      const today = new Date();
-      const dayOfWeek = today.getDay();
-      const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // 일요일이면 -6, 아니면 월요일까지의 차이
-      const monday = new Date(today);
-      monday.setDate(today.getDate() + diff);
-      monday.setHours(0, 0, 0, 0);
-      return monday;
-    };
-
-    // Prisma 트랜잭션으로 모든 데이터를 함께 생성
+    name: string;
+    gender: Gender;
+    birthDate: Date;
+    height: number;
+    weight: number;
+    weeklyMasturbationCount: number;
+  }): Promise<UserWithRelations> {
+    // Prisma 트랜잭션으로 모든 데이터를 함께 생성 (모두 성공하거나 모두 실패)
     const result = await this.prisma.$transaction(async (tx) => {
       // 1. User 생성
       const user = await tx.user.create({
@@ -43,33 +40,32 @@ export class UsersRepository {
         },
       });
 
-      // 2. UserProfile 생성 (키/몸무게가 있는 경우)
-      if (data.height !== undefined || data.weight !== undefined) {
-        await tx.userProfile.create({
-          data: {
-            userId: user.id,
-            height: data.height,
-            weight: data.weight,
-          },
-        });
-      }
+      // 2. UserProfile 생성 (필수)
+      const profile = await tx.userProfile.create({
+        data: {
+          userId: user.id,
+          height: data.height,
+          weight: data.weight,
+        },
+      });
 
-      // 3. MasturbationWeek 생성 (자위 횟수가 있는 경우)
-      if (data.weeklyMasturbationCount !== undefined) {
-        // Prisma 트랜잭션 내에서 직접 Prisma 모델 사용 (타입 안전)
-        const masturbationWeekModel = tx as typeof tx & {
-          masturbationWeek: typeof this.prisma.masturbationWeek;
-        };
-        await masturbationWeekModel.masturbationWeek.create({
-          data: {
-            userId: user.id,
-            weekStartDate: getWeekStartDate(),
-            count: data.weeklyMasturbationCount,
-          },
-        });
-      }
+      // 3. MasturbationWeek 생성 (필수)
+      const masturbationWeek = await tx.masturbationWeek.create({
+        data: {
+          userId: user.id,
+          count: data.weeklyMasturbationCount,
+        },
+      });
 
-      return user;
+      // 4. 관계 데이터 포함해서 리턴 (userId 중복 제거)
+      const { userId: _, ...profileWithoutUserId } = profile;
+      const { userId: __, ...masturbationWeekWithoutUserId } = masturbationWeek;
+      
+      return {
+        ...user,
+        profile: profileWithoutUserId,
+        masturbationWeeks: [masturbationWeekWithoutUserId],
+      };
     });
 
     return result;
