@@ -7,9 +7,16 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { MasturbationModule } from './modules/masturbation/masturbation.module';
 
 @Module({
-  imports: [EnvironmentModule, DatabaseModule, AuthModule, UsersModule],
+  imports: [
+    EnvironmentModule,
+    DatabaseModule,
+    AuthModule,
+    UsersModule,
+    MasturbationModule,
+  ],
   controllers: [AppController],
   providers: [
     {
@@ -23,4 +30,3 @@ import { AuthModule } from './modules/auth/auth.module';
   ],
 })
 export class AppModule {}
-  

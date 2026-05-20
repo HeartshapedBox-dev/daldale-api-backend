@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "------------------------BUILDS------------------------": "",
-    "prebuild": "rimraf dist",
+    "prebuild": "rimraf dist && pnpm prisma:generate",
     "build": "nest build && pnpm build:sdk && pnpm build:swagger",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "------------------------START------------------------": "",

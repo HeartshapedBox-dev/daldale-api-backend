@@ -20,6 +20,11 @@ enum UserRole {
   ADMIN
 }
 
+enum GoalType {
+  WEEKLY_COUNT
+  ABSTINENCE
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
@@ -35,6 +40,8 @@ model User {
   // Relations
   profile      UserProfile?
   masturbationWeeks MasturbationWeek[]
+  masturbationRecords DailyMasturbationRecord[]
+  masturbationGoals MasturbationGoal[]
 
   @@map("user")
 }
@@ -64,4 +71,40 @@ model MasturbationWeek {
   updatedAt    DateTime @updatedAt
 
   @@map("masturbation_weeks")
+}
+
+model DailyMasturbationRecord {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  date      DateTime
+  count     Int      @default(1)
+  note      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId, date])
+  @@map("daily_masturbation_records")
+}
+
+model MasturbationGoal {
+  id                    String   @id @default(cuid())
+  userId                String
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type                  GoalType
+  weeklyTargetCount     Int?
+  abstinenceTargetDays  Int?
+  startDate             DateTime
+  endDate               DateTime?
+  isActive              Boolean  @default(true)
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([userId, isActive])
+  @@map("masturbation_goals")
 }
